@@ -13,17 +13,29 @@ contract Trazability is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     Counters.Counter private _tokenIdCounter;
 
     struct ProductData {
-        string productName;
-        string producer;
-        string origin;
-        uint256 productionDate;
-        uint256 expirationDate;
-    }
+    string id;
+    string protocolName;
+    string name;
+    string status;
+    TrazabilityData[] trazability;
+    string ownerUid;
+}
 
-    struct Product {
-        ProductData data;
-        uint256 tokenId;
-    }
+struct TrazabilityData {
+    Line[] line;
+    string name;
+}
+
+struct Line {
+    string path;
+    string name;
+    Milestone[] milestones;
+}
+
+struct Milestone {
+    string image;
+    string description;
+}
     mapping(string => Product) productDataByLotNumber;
 
     constructor() ERC721("Ideal Trazabilidad", "IDEAL") {}
