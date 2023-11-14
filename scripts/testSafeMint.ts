@@ -1,38 +1,39 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import hre from "hardhat";
 
 async function main() {
-  const hre = require("hardhat");
   const { ethers } = hre;
 
-  // Proporciona los datos del producto y el número de lote
-  const lotNumber = "12345"; // Número de lote deseado
   const productData = {
-    productName: "Producto de prueba",
-    producer: "Productor de prueba",
-    origin: "Origen de prueba",
-    productionDate: 1636252800, // Fecha Unix en segundos (ejemplo: 01/11/2021)
-    expirationDate: 1679740800, // Fecha Unix en segundos (ejemplo: 01/03/2023)
+    lotNumber: "1290",
+    protocolName: "agroalimentario",
+    name: "Queso rayado",
+    status: "realizado",
+    ownerUid: "cvczqdnr40QfwFtL9dCVV6CBaDo1",
+    linesData:
+      '[{"path":"/vino1/produccion-primaria/etapa1","name":"Origen de la producción"},{"path":"/vino1/produccion-primaria/etapa2","name":"Características fenológicas / ciclos"}]',
+    milestonesData:
+      '[{"image":"https://ipfs.io/ipfs/QmVEGsHtE4EX6UTZXSPeogWZ4W1NsmDbfPYMbht4Jzz62s","description":"Tomando unas buenas copas de vino antes de empezar con la produccion"},{"image":"https://ipfs.io/ipfs/QmYRWtgEsxVQwZxasiRhbL97udpppSVXp9WWSDWcch82ge","description":"Estas son caracteristicas"}]',
   };
-
   // Dirección del destinatario (usuario que recibirá el nuevo NFT)
   const recipientAddress = "0xCb5751E0bC332373597D5945e2E0E625FAfB1346"; // Reemplaza con la dirección del destinatario
 
   // URI del token (ubicación del archivo JSON con metadatos)
   const tokenURI =
-    "https://ipfs.io/ipfs/QmTcxaZ9etN2MyrXETNQqpGqjwgATbgpgMd7GFwueH2Ju1"; // Reemplaza con el URI deseado
+    "https://ipfs.io/ipfs/QmdPBVeJH7uGKCdqZsgLiM1kkKkwteME7EwLzDcuJcBoiw"; // Reemplaza con el URI deseado
 
   // Obtén la instancia del contrato
-  const Trazability = await hre.ethers.getContractFactory("Trazability");
+  const Trazability = await ethers.getContractFactory("Trazability");
   const trazability = await Trazability.attach(
-    "0xca1DB79971161CC4e0A5185c80Ec004E7F25Eb02"
-  ); // Reemplaza "CONTRATO_ADDRESS" con la dirección de tu contrato desplegado
+    "0x2c659954d12b7765e072508514e42Cbb960d9513" // Reemplaza "CONTRATO_ADDRESS" con la dirección de tu contrato desplegado
+  );
 
   // Mintea un nuevo token asociado al número de lote y establece los datos del producto
   await trazability.safeMint(
     recipientAddress,
     tokenURI,
     productData,
-    lotNumber
+    productData.lotNumber
   );
 
   console.log("Token minteado con éxito y datos del producto establecidos.");

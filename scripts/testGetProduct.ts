@@ -1,40 +1,29 @@
-import { HardhatRuntimeEnvironment } from "hardhat/types";
+const { ethers } = require("hardhat");
 
 async function main() {
-  const hre = require("hardhat");
-  const { ethers } = hre;
+  try {
+    const hre = require("hardhat");
 
-  // Proporciona el número de lote del producto que deseas recuperar
-  const lotNumber = "12345"; // Reemplaza con el número de lote deseado
+    // Proporciona el número de lote del producto que deseas recuperar
+    const id = "MgZ9sMNEGxIcgSZGDOeK"; // Reemplaza con el número de lote deseado
 
-  // Obtén la instancia del contrato
-  const Trazability = await hre.ethers.getContractFactory("Trazability");
-  const trazability = await Trazability.attach(
-    "0xca1DB79971161CC4e0A5185c80Ec004E7F25Eb02"
-  ); // Reemplaza "CONTRATO_ADDRESS" con la dirección de tu contrato desplegado
+    // Obtén la instancia del contrato
+    const Trazability = await hre.ethers.getContractFactory("Trazability");
+    const trazability = await Trazability.attach(
+      "0xDaDE6b608A256587B936Cc8f85125e3Fad018b4A" // Reemplaza con la dirección de tu contrato desplegado
+    );
 
-  // Recupera los datos del producto
-  const productData = await trazability.getProductDataByLotNumber(lotNumber);
+    const productData = await trazability.getProductData(id);
 
-  console.log("Datos del producto recuperados:");
-  console.log("Nombre del producto:", productData.productName);
-  console.log("Productor:", productData.producer);
-  console.log("Origen:", productData.origin);
-
-  const productionDate = new Date(
-    Number(productData.productionDate) * 1000
-  ).toLocaleDateString();
-  const expirationDate = new Date(
-    Number(productData.expirationDate) * 1000
-  ).toLocaleDateString();
-
-  console.log("Fecha de producción:", productionDate);
-  console.log("Fecha de vencimiento:", expirationDate);
+    // Accede a los datos de las líneas usando los índices
+    console.log(productData);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+// Utiliza await para asegurarte de que todas las promesas se resuelvan antes de salir
+(async () => {
+  await main();
+  process.exit(0);
+})();
