@@ -5,7 +5,7 @@ async function main() {
 
   console.log("Deploying contracts with the account:", deployer.address);
 
-  const token = await ethers.deployContract("Trazability");
+  const token = await ethers.deployContract("TrazabilityCopy");
 
   console.log("Token address:", await token.getAddress());
 }

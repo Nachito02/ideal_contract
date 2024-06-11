@@ -12,24 +12,20 @@ contract Trazability is ERC1155, Ownable {
 
     struct ProductData {
         string id;
-        string lotNumber;
-        string protocolName;
         string name;
-        string status;
-        string ownerUid;
         string trazability;
+        string productReference;
     }
 
-    mapping(string => ProductData) productIdToProductData;
-    mapping(uint256 => string) tokenIdToUri;
-    mapping(uint256 => string) tokenIdToProductId; // Agregado este mapeo
+    mapping(string => ProductData) private productIdToProductData;
+    mapping(uint256 => string) private tokenIdToUri;
+    mapping(uint256 => string) private tokenIdToProductId;
 
     constructor() ERC1155("Trazabilidad Ideal") {}
 
     function safeMint(
         address to,
         ProductData memory data,
-        uint256 amount,
         string memory externalUri
     ) public {
         uint256 tokenId = _tokenIdCounter.current();
@@ -38,35 +34,30 @@ contract Trazability is ERC1155, Ownable {
         // Convert struct to bytes
         bytes memory dataBytes = abi.encodePacked(
             data.id,
-            data.lotNumber,
-            data.protocolName,
-            data.status,
-            data.ownerUid,
-            data.trazability
+            data.name,
+            data.trazability,
+            data.productReference
         );
 
-        // Mint 'amount' tokens with the specified external URI
-        _mint(to, tokenId, amount, dataBytes);
+        // Mint the token
+        _mint(to, tokenId, 1, dataBytes);
 
-        // Almacenar los datos del producto por ID de producto
-        productIdToProductData[data.id] = ProductData({
-            id: data.id,
-            lotNumber: data.lotNumber,
-            protocolName: data.protocolName,
-            name: data.name,
-            status: data.status,
-            ownerUid: data.ownerUid,
-            trazability: data.trazability
-        });
+        // Store the product data by product ID
+        productIdToProductData[data.id] = data;
 
-        // Almacenar la relación entre el ID de token y el ID de producto
+        // Store the relationship between token ID and product ID
         tokenIdToProductId[tokenId] = data.id;
 
-        // Asignar el URI específico del token
+        // Assign the specific URI for the token
         tokenIdToUri[tokenId] = externalUri;
     }
 
-    function getProductData(string memory productId) public view returns (ProductData memory) {
+    function getProductData(uint256 tokenId) public view returns (ProductData memory) {
+        string memory productId = tokenIdToProductId[tokenId];
+        return productIdToProductData[productId];
+    }
+
+    function getProductDataById(string memory productId) public view returns (ProductData memory) {
         return productIdToProductData[productId];
     }
 

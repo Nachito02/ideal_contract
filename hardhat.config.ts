@@ -24,10 +24,9 @@ const config: HardhatUserConfig = {
   },
 
   networks: {
-    goerliOptimism: {
-      url: "https://goerli.optimism.io",
+    OP_sepolia: {
+      url: "https://sepolia.optimism.io",
       accounts: [PRIVATE_KEY as string],
-      gasPrice: 1000000000,
     },
   },
 };
